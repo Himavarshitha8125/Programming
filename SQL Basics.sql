@@ -1,0 +1,604 @@
+CREATE DATABASE Hii;
+USE Hii;
+CREATE TABLE Student
+(
+    sid INT PRIMARY KEY,
+    student_name VARCHAR(30),
+    branch VARCHAR(20),
+    marks DECIMAL(4,1),
+    location VARCHAR(30)
+);
+INSERT INTO Student VALUES
+(1,'Amit','CSE',85.5,'Hyderabad'),
+(2,'Neha','ECE',78,'Chennai'),
+(3,'Rahul','CSE',85.5,'Hyderabad'),
+(4,'Priya','EEE',92,'Bangalore'),
+(5,'Kiran','MECH',67.5,'Hyderabad'),
+(6,'Sneha','CSE',78,'Chennai'),
+(7,'Arjun','ECE',85.5,'Delhi'),
+(8,'Pooja','EEE',92,'Bangalore'),
+(9,'Vikas','MECH',67.5,'Hyderabad'),
+(10,'Anjali','CSE',88,'Mumbai'),
+(11,'Rohit','ECE',78,'Chennai'),
+(12,'Divya','EEE',92,'Bangalore'),
+(13,'Suresh','MECH',67.5,'Hyderabad'),
+(14,'Kavya','CSE',85.5,'Delhi'),
+(15,'Manoj','ECE',88,'Mumbai'),
+(16,'Nisha','EEE',78,'Chennai'),
+(17,'Tarun','MECH',67.5,'Hyderabad'),
+(18,'Meena','CSE',92,'Bangalore'),
+(19,'Deepak','ECE',85.5,'Delhi'),
+(20,'Swathi','EEE',88,'Mumbai');
+SELECT * FROM Student;
+#2) Write a query to change the location value to 'Hyd' whose student id is 2.
+UPDATE Student
+SET location = 'Hyd'
+WHERE sid = 2;
+#3) Write a query to display Marks with unique values (display duplicates only once).
+SELECT DISTINCT marks
+FROM Student;
+#4) Write a query to insert student id, student name and branch values.
+INSERT INTO Student (sid, student_name, branch)
+VALUES (21, 'Ramesh', 'CSE');
+
+#Note: Since marks and location are not specified, they will be stored as NULL (provided the table allows NULL values).
+
+#5) Write a query to remove student details whose student id is 3.
+DELETE FROM Student
+WHERE sid = 3;
+#6) Write a query to change the branch to 'ECE' and location to 'Bangalore' whose student id is 1.
+UPDATE Student
+SET branch = 'ECE',location = 'Bangalore'
+WHERE sid = 1;
+#7) Write a query to display student details who are from the 'CSE' branch.
+SELECT *
+FROM Student
+WHERE branch = 'CSE';
+#8) Write a query to display student name, branch and marks with the column name 'Total_Marks'.
+SELECT student_name,branch,marks AS Total_Marks
+FROM Student;
+#------------------------------------------------------------------------------------------------------------------------------------------
+#1) WAQ to display student details who scored more than 60 marks and branch is CSE.
+SELECT *
+FROM Student
+WHERE marks > 60 AND branch = 'CSE';
+#2) WAQ to display student name, branch, marks whose id is either 1 or 2 and branch is ECE.
+SELECT student_name, branch, marks
+FROM Student
+WHERE sid IN (1,2)
+AND branch = 'ECE';
+
+#OR
+
+SELECT student_name, branch, marks
+FROM Student
+WHERE (sid = 1 OR sid = 2)
+AND branch = 'ECE';
+#3) WAQ to display student details who scored in the range of 40 to 70.
+SELECT *
+FROM Student
+WHERE marks BETWEEN 40 AND 70;
+#4) WAQ to display student details whose branch is either CSE or ECE or EEE and who don't have a location.
+SELECT *
+FROM Student
+WHERE branch IN ('CSE','ECE','EEE')
+AND location IS NULL;
+
+#OR
+
+SELECT *
+FROM Student
+WHERE (branch = 'CSE' OR branch = 'ECE' OR branch = 'EEE') AND location IS NULL;
+#5) WAQ to display student details who are studying branches other than CSE and ECE.
+SELECT *
+FROM Student
+WHERE branch NOT IN ('CSE','ECE');
+
+#OR
+
+SELECT *
+FROM Student
+WHERE branch <> 'CSE'
+AND branch <> 'ECE';
+
+
+ALTER TABLE Student
+ADD date_of_joining DATE;
+
+
+UPDATE Student
+SET date_of_joining = CASE sid
+    WHEN 1 THEN '2024-12-15'
+    WHEN 2 THEN '2025-06-13'
+    WHEN 3 THEN '2018-02-27'
+    WHEN 4 THEN '2020-04-21'
+    WHEN 5 THEN '2019-08-20'
+    WHEN 6 THEN '2018-10-02'
+END
+WHERE sid IN (1,2,3,4,5,6);
+
+
+SELECT sid, student_name, date_of_joining
+FROM Student;
+
+
+
+
+
+
+
+
+#1) WAQ to display student details whose name has letter 'a' in the last but one position.
+SELECT *
+FROM Student
+WHERE student_name LIKE '%a_';
+#2) WAQ to display student details whose name has letter 'a' at least two times.
+SELECT *
+FROM Student WHERE student_name LIKE '%a%a%';
+#3) WAQ to display student details whose name has letter 'a' exactly 2 times.
+SELECT *
+FROM Student WHERE student_name LIKE '%a%a%' AND student_name NOT LIKE '%a%a%a%';
+#4) WAQ to display student details who joined after 2023 year.
+SELECT *
+FROM Student
+WHERE YEAR(date_of_joining) > 2023;
+
+#OR
+
+SELECT *
+FROM Student
+WHERE date_of_joining > '2023-12-31';
+#5) WAQ to display student details who joined in 2024 year.
+SELECT *
+FROM Student
+WHERE YEAR(date_of_joining) = 2024;
+
+#OR
+
+SELECT *
+FROM Student
+WHERE date_of_joining BETWEEN '2024-01-01' AND '2024-12-31';
+#6) WAQ to display student details who joined in April month of any year.
+SELECT *
+FROM Student
+WHERE MONTH(date_of_joining) = 4;
+#7) WAQ to display student details whose branch name has character '_'.
+
+#Since _ is a wildcard in SQL, use the escape character (\).
+
+SELECT *
+FROM Student
+WHERE branch LIKE '%\_%';
+#8) WAQ to display student details whose name starts with a vowel.
+SELECT * FROM Student
+WHERE student_name LIKE 'A%' OR student_name LIKE 'E%' OR student_name LIKE 'I%' OR student_name LIKE 'O%' OR student_name LIKE 'U%';
+
+#OR (using REGEXP):
+
+SELECT *
+FROM Student
+WHERE student_name REGEXP '^[AEIOUaeiou]';
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------------
+#1) WAQ to display the branch name and the highest marks in the branch as Highest_Marks.
+SELECT branch, MAX(marks) AS Highest_Marks
+FROM Student
+GROUP BY branch;
+#2) WAQ to display the number of students studying in each branch.
+SELECT branch, COUNT(*) AS No_of_Students
+FROM Student
+GROUP BY branch;
+#3) WAQ to display the number of people coming from the same location such that they should be at least two people.
+SELECT location, COUNT(*) AS No_of_Students
+FROM Student
+GROUP BY location
+HAVING COUNT(*) >= 2;
+#4) WAQ to display the student details in the descending order of their marks.
+SELECT *
+FROM Student
+ORDER BY marks DESC;
+#5) WAQ to display the 2nd, 3rd and 4th highest marks.
+SELECT DISTINCT marks
+FROM Student
+ORDER BY marks DESC
+LIMIT 3 OFFSET 1;
+#6) WAQ to display the number of different branches.
+SELECT COUNT(DISTINCT branch) AS Total_Branches
+FROM Student;
+#7) WAQ to display the branch and number of students joined in each branch in the year 2025.
+SELECT branch,
+       COUNT(*) AS No_of_Students
+FROM Student
+WHERE YEAR(date_of_joining) = 2025
+GROUP BY branch;
+#8) WAQ to display branch and average marks in each branch by ignoring students who scored less than 35 marks such that they should have at least average value 60 and display in descending order of average marks.
+SELECT branch,
+       AVG(marks) AS Average_Marks
+FROM Student
+WHERE marks >= 35
+GROUP BY branch
+HAVING AVG(marks) >= 60
+ORDER BY Average_Marks DESC;
+#9) WAQ to display branch, year and number of students joined in the months of May, June and July of every year and display the count in descending order.
+SELECT branch,
+       YEAR(date_of_joining) AS Year,
+       COUNT(*) AS No_of_Students
+FROM Student
+WHERE MONTH(date_of_joining) IN (5,6,7)
+GROUP BY branch, YEAR(date_of_joining)
+ORDER BY No_of_Students DESC;
+#10) WAQ to display what percent of students are from 'CSE' branch.
+SELECT
+(COUNT(*) * 100 / (SELECT COUNT(*) FROM Student)) AS Percentage_of_CSE
+FROM Student
+WHERE branch = 'CSE';
+#------------------------------------------------------------------------------------------------------------------------------------------
+#1) WAQ to display the details of the students along with their Rank based on marks.
+SELECT *,
+       RANK() OVER(ORDER BY marks DESC) AS Rank_No
+FROM Student;
+#2) WAQ to display the details of the students along with their Dense Rank based on marks.
+SELECT *,DENSE_RANK() OVER(ORDER BY marks DESC) AS D
+FROM Student;
+#3) WAQ to display the details of the students who secured third highest mark.
+SELECT *
+FROM
+(
+    SELECT *,
+           DENSE_RANK() OVER(ORDER BY marks DESC) AS Rank_No
+    FROM Student
+) AS T
+WHERE Rank_No = 3;
+#4) WAQ to display the details of the students who secured second highest mark in each and every branch.
+SELECT *
+FROM
+(
+    SELECT *,
+           DENSE_RANK() OVER(PARTITION BY branch ORDER BY marks DESC) AS Rank_No
+    FROM Student
+) AS T
+WHERE Rank_No = 2;
+#5) WAQ to display the details of the students along with Row Number.
+SELECT *,
+       ROW_NUMBER() OVER(ORDER BY sid) AS Row_No
+FROM Student;
+#6) WAQ to display the first 2 student details from each and every branch.
+SELECT *
+FROM
+(
+    SELECT *,
+           ROW_NUMBER() OVER(PARTITION BY branch ORDER BY sid) AS Row_No
+    FROM Student
+) AS T
+WHERE Row_No <= 2;
+#7) WAQ to display the first student details from each and every location.
+SELECT *
+FROM
+(
+    SELECT *,
+           ROW_NUMBER() OVER(PARTITION BY location ORDER BY sid) AS Row_No
+    FROM Student
+) AS T
+WHERE Row_No = 1;
+
+#----------------------------------------------------------------------------------------------------------------------------------------
+CREATE TABLE dept
+(
+    Did INT PRIMARY KEY,
+    Dname VARCHAR(30),
+    loc VARCHAR(30)
+);
+
+
+
+INSERT INTO dept VALUES
+(10, 'Support role', 'Bangalore'),
+(20, 'Developer', 'Hyderabad'),
+(30, 'Testing', 'Mumbai'),
+(40, 'HR', 'Delhi');
+
+
+SELECT * FROM dept;
+
+
+CREATE TABLE emp
+(
+    Eid INT PRIMARY KEY,
+    Ename VARCHAR(20) NOT NULL,
+    branch VARCHAR(20),
+    marks INT,
+    DOJ DATE,
+    MGRid INT,
+    sal DECIMAL(10,2),
+    deptno INT,
+    
+    CONSTRAINT FK_Dept
+    FOREIGN KEY (deptno)
+    REFERENCES dept(Did)
+);
+
+
+INSERT INTO emp VALUES
+(101,'A','ECE',60,'2018-12-07',109,800,20),
+(102,'B','CIVIL',75,'2018-02-18',104,1600,30),
+(103,'C','CSE',50,'2017-04-17',105,1250,30),
+(104,'D','ECE',80,'2022-07-13',109,2950,20),
+(105,'E','ME',75,'2024-01-01',107,2850,10),
+(106,'F','CSE',95,'2023-12-13',NULL,1300,20),
+(107,'G','CIVIL',67,'2020-09-05',102,950,30),
+(108,'H','CSE',25,'2021-11-01',104,500,20),
+(109,'I','ECE',38,'2019-06-10',105,1100,10),
+(110,'J','EEE',48,'2017-07-26',102,2400,NULL);
+
+
+SELECT * FROM dept;
+
+SELECT * FROM emp;
+
+#1) WAQ to perform Cross Join on emp and dept tables.
+#Display all possible combinations of employees and departments.
+
+SELECT *
+FROM emp
+CROSS JOIN dept;
+
+#2) WAQ to perform Natural Join on emp and dept tables.
+
+/*Natural Join works only if both tables have same column name.
+
+Your tables have
+
+emp.deptno
+dept.Did
+
+Different names.
+
+So Natural Join will not work properly.*/
+
+SELECT *
+FROM emp
+JOIN dept
+ON emp.deptno = dept.Did;
+
+
+#3) WAQ to display emp details and their respective working dept details.
+SELECT *
+FROM emp
+INNER JOIN dept
+ON emp.deptno = dept.Did;
+
+#4) WAQ to display emp name, dept no, dept name details.
+SELECT Ename,deptno,Dname
+FROM emp JOIN dept
+ON emp.deptno = dept.Did;
+
+#5) WAQ to display emp name, salary, their dept name and its location.
+SELECT Ename,sal,Dname,loc
+FROM emp
+JOIN dept
+ON emp.deptno = dept.Did;
+
+
+#6) WAQ to display emp name and their dept name who are earning more than 1000.
+SELECT Ename, Dname
+FROM emp
+JOIN dept
+ON emp.deptno = dept.Did
+WHERE sal > 1000;
+
+#7) WAQ to display emp name, doj, salary and their dept name who joined in either 2018, 2019 and 2020.
+SELECT Ename, DOJ, sal, Dname
+FROM emp
+JOIN dept
+ON emp.deptno = dept.Did
+WHERE YEAR(DOJ) IN (2018,2019,2020);
+
+#8) WAQ to display emp name, branch, marks, dept name who scored more than 50 and studying in ECE, CIVIL, CSE, ME branches in descending order of marks.
+SELECT Ename,branch,marks,Dname
+FROM emp
+JOIN dept
+ON emp.deptno = dept.Did
+WHERE marks > 50
+AND branch IN ('ECE','CIVIL','CSE','ME')
+ORDER BY marks DESC;
+
+#9) WAQ to display dept name and number of employees working in that department who are earning more than 1000 and there should be at least two employees.
+SELECT Dname,COUNT(*) AS No_of_Employees
+FROM emp
+JOIN dept
+ON emp.deptno = dept.Did
+WHERE sal > 1000
+GROUP BY Dname
+HAVING COUNT(*) >= 2;
+
+/*COUNT
+
+↓
+
+GROUP BY
+
+↓
+
+HAVING*/
+
+#10) WAQ to display emp details, their dept details whether they are working or not in any department.
+
+SELECT *
+FROM emp
+LEFT JOIN dept
+ON emp.deptno = dept.Did;
+
+#11) WAQ to display emp details, their dept details whether they are working in department or not and earning more than 1500 in descending order of salary.
+SELECT * FROM emp
+LEFT JOIN dept
+ON emp.deptno = dept.Did
+WHERE sal > 1500
+ORDER BY sal DESC;
+
+/*SELF JOIN
+Employee table joins with itself.*/
+
+#Display employee details with manager details
+SELECT *
+FROM emp e
+JOIN emp m
+ON e.MGRid = m.Eid;
+
+
+#Display employee name and manager name.
+
+SELECT
+e.Ename AS Employee,
+m.Ename AS Manager
+FROM emp e
+JOIN emp m
+ON e.MGRid = m.Eid;
+
+#14) Display employee details and manager details in descending order of manager salary.
+SELECT *
+FROM emp e
+JOIN emp m
+ON e.MGRid = m.Eid
+ORDER BY m.sal DESC;
+#---------------------------------------------------------------------------------------------------------------------------------------
+#Subquery
+/*GOLDEN RULE (Remember Forever)
+
+Whenever you see
+
+than B
+like C
+same as E
+after J
+manager of B
+department of I
+
+👉 First find B/C/E/J/I.*/
+
+#1) WAQTD names of employees earning less than 'B'
+
+/*Step 1
+
+Find B's salary.
+
+SELECT sal
+FROM emp
+WHERE ename='B';
+
+Suppose
+
+B = 1600
+
+Step 2
+
+Find employees earning less than 1600.*/
+
+SELECT ename
+FROM emp
+WHERE sal <
+(
+SELECT sal
+FROM emp
+WHERE ename='B'
+);
+
+#2) Employees working in same department as C
+/*Same Dept as C
+
+Step 1
+
+Find C's department.
+
+SELECT deptno
+FROM emp
+WHERE ename='C';
+
+Suppose:30
+Step 2
+Find everyone in dept 30.*/
+
+SELECT ename,deptno
+FROM emp
+WHERE deptno=
+(
+SELECT deptno
+FROM emp
+WHERE ename='C'
+);
+
+
+#3. WAQTD name and hiredate of the employees if the employee was hired after 'J'
+/*Find J's joining date.
+
+SELECT doj
+FROM emp
+WHERE ename='J';
+
+Suppose
+
+2017-07-26*/
+
+SELECT ename,doj
+FROM emp
+WHERE doj >
+(
+SELECT doj
+FROM emp
+WHERE ename='J'
+);
+
+#4. WAQTD all the details of the employee working in the same deptno as 'E'
+select * from emp where deptno=(select  deptno from emp where ename='E');
+
+# 5WAQTD name , sal , deptno of the employees if the employees Earn more than 1500 and work in the same branch as 'I'
+select ename,sal,deptno from emp where sal>1500 and branch=(select branch from emp where ename='I');
+
+#6. WAQTD details of the employees earning more than 'b' But less than 'e'
+select * from emp where sal>(select sal from emp where ename='B') and sal<(select sal from emp where ename='e');
+
+#7. WAQTD EMPNO AND ENAME ALONG WITH ANNUAL SALARY OF ALL THE EMPLOYEES IF THEIR ANNUAL SALARY IS GREATER THAN 'A' ANNUAL SALARY.
+select eid,ename ,sal*12 as Salary from emp where sal*12>(select  sal*12 from emp where ename='A');
+
+#8. WAQTD all the details of the employees who are earning more than b's manager's salary.
+select * from emp where sal>(select sal from emp where eid= (select mgrid from emp where ename='B')); 
+
+#9. WAQTD all the details of the B's manager's manager.
+select * from emp where eid=(select mgrid from emp where eid=(select mgrid from emp where ename='B'));
+
+#10. WAQTD all the details of employees whose work location is Delhi.
+/*Location is NOT in emp.
+It is in dept.
+Need Dept table.*/
+SELECT * FROM emp
+WHERE deptno=(select did from dept where loc='Delhi');
+SELECT *
+FROM emp
+WHERE deptno=
+(
+SELECT did
+FROM dept
+WHERE loc='Delhi'
+);
+
+#11. WAQTD all the details of employees who are working in 'Testing' department.
+select * from emp where deptno=(select did from dept where Dname='Testing');
+
+#12. WAQTD all the details of employees who are earning more than average salary.
+select * from emp where sal >(select avg(sal) from emp);
+
+#13. WAQTD all the details of employees who are earning more than average salary in their department.
+
+SELECT *
+FROM emp e
+WHERE sal >
+(
+SELECT AVG(sal)
+FROM emp
+WHERE deptno=e.deptno
+);
+
+
+
+
+
